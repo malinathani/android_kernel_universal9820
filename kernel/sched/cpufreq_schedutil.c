@@ -44,6 +44,7 @@ struct sugov_tunables {
 	struct gov_attr_set attr_set;
 	unsigned int up_rate_limit_us;
 	unsigned int down_rate_limit_us;
+	bool iowait_boost_enable;
 #ifdef CONFIG_SCHED_KAIR_GLUE
 	bool fb_legacy;
 #endif
@@ -469,6 +470,11 @@ static inline void sugov_util_collapse(struct sugov_cpu *sg_cpu)
 static void sugov_set_iowait_boost(struct sugov_cpu *sg_cpu, u64 time,
 				   unsigned int flags)
 {
+	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
+
+	if (!sg_policy->tunables->iowait_boost_enable)
+		return;
+
 	if (flags & SCHED_CPUFREQ_IOWAIT) {
 		if (sg_cpu->iowait_boost_pending)
 			return;
@@ -770,6 +776,27 @@ static ssize_t fb_legacy_store(struct gov_attr_set *attr_set, const char *buf,
 
 	if (kstrtobool(buf, &tunables->fb_legacy))
 		return -EINVAL;
+	return count;
+}
+
+static ssize_t iowait_boost_enable_show(struct gov_attr_set *attr_set,
+					char *buf)
+{
+	struct sugov_tunables *tunables = to_sugov_tunables(attr_set);
+
+	return sprintf(buf, "%u\n", tunables->iowait_boost_enable);
+}
+
+static ssize_t iowait_boost_enable_store(struct gov_attr_set *attr_set,
+					 const char *buf, size_t count)
+{
+	struct sugov_tunables *tunables = to_sugov_tunables(attr_set);
+	bool enable;
+
+	if (kstrtobool(buf, &enable))
+		return -EINVAL;
+
+	tunables->iowait_boost_enable = enable;
 
 	return count;
 }
@@ -777,6 +804,7 @@ static ssize_t fb_legacy_store(struct gov_attr_set *attr_set, const char *buf,
 
 static struct governor_attr up_rate_limit_us = __ATTR_RW(up_rate_limit_us);
 static struct governor_attr down_rate_limit_us = __ATTR_RW(down_rate_limit_us);
+static struct governor_attr iowait_boost_enable = __ATTR_RW(iowait_boost_enable);
 #ifdef CONFIG_SCHED_KAIR_GLUE
 static struct governor_attr fb_legacy = __ATTR_RW(fb_legacy);
 #endif
@@ -784,6 +812,7 @@ static struct governor_attr fb_legacy = __ATTR_RW(fb_legacy);
 static struct attribute *sugov_attributes[] = {
 	&up_rate_limit_us.attr,
 	&down_rate_limit_us.attr,
+	&iowait_boost_enable.attr,
 #ifdef CONFIG_SCHED_KAIR_GLUE
 	&fb_legacy.attr,
 #endif
@@ -944,6 +973,8 @@ tunables_init:
 #ifdef CONFIG_SCHED_KAIR_GLUE
 	tunables->fb_legacy = true;
 #endif
+
+	tunables->iowait_boost_enable = false;
 
 	policy->governor_data = sg_policy;
 	sg_policy->tunables = tunables;
