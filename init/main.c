@@ -88,6 +88,7 @@
 #include <linux/io.h>
 #include <linux/cache.h>
 #include <linux/rodata_test.h>
+#include <linux/jump_label.h>
 
 #include <asm/io.h>
 #include <asm/bugs.h>
@@ -842,7 +843,7 @@ asmlinkage __visible void __init start_kernel(void)
 #endif
 	thread_stack_cache_init();
 #ifdef CONFIG_RKP_KDP
-	if (rkp_cred_enable) 
+	if (rkp_cred_enable)
 		kdp_init();
 #endif /*CONFIG_RKP_KDP*/
 	cred_init();
@@ -1224,6 +1225,7 @@ static int __ref kernel_init(void *unused)
 	/* need to finish all async __init code before freeing the memory */
 	async_synchronize_full();
 	ftrace_free_init_mem();
+	jump_label_invalidate_init();
 #ifndef CONFIG_DEFERRED_INITCALLS
 	free_initmem();
 #endif
