@@ -229,7 +229,7 @@
 
 	chosen: chosen {
 //		bootargs = "earlycon=exynos4210,0x10440000 console=ttySAC0,115200n8 root=/dev/ram0 rw ramdisk=8192 initrd=0x84000000,8M init=/linuxrc mem=512M clk_ignore_unused";
-	        bootargs = "console=ram bcm_setup=0xffffff80f8e00000 pmic_info=0x3 ccic_info=0x1 firmware_class.path=/vendor/firmware reserve-fimc=0xffffff80fa000000 sec_debug.cp=0 nohugeiomap epx_activate=true";
+	        bootargs = "noirqdebug console=ram bcm_setup=0xffffff80f8e00000 pmic_info=0x3 ccic_info=0x1 firmware_class.path=/vendor/firmware reserve-fimc=0xffffff80fa000000 sec_debug.cp=0 nohugeiomap epx_activate=true";
 		linux,initrd-start = <0x84000000>;
 		linux,initrd-end = <0x841FFFFF>;
 	};
@@ -1886,7 +1886,7 @@
 		reg = <0x0 0x191C5000 0x1000>;
 		attr = <0x03>; /* WCG, HDR10 */
 	};
-	
+
 
 	disp_ss: disp_ss@0x16010000 {
 		compatible = "samsung,exynos9-disp_ss";
@@ -2029,7 +2029,7 @@
 		dpp_cnt = <7>;
 		dsim_cnt = <2>;
 		decon_cnt = <3>;
-        
+
 		/* For HDR processing */
 		hdr_num = <2>;
 		hdr_type = <2 3 0 0>;
@@ -5062,7 +5062,7 @@
 	};
 
 	cpufreq-ufc {
-		/* Ctrl Type */	
+		/* Ctrl Type */
 		#define PM_QOS_MIN_LIMIT		0
 		#define PM_QOS_MIN_WO_BOOST_LIMIT	1
 		#define PM_QOS_MAX_LIMIT		2
