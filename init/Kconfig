@@ -1041,6 +1041,14 @@ config SCHED_EMS
 	  and prefer_perf and enhanced prefer_idle that work in conjunction with
 	  SCHEDTUNE.
 
+config STUNE_ASSIST
+	bool "SchedTune configuration helper"
+	depends on SCHED_TUNE
+	depends on ANDROID
+	help
+	  This option enables the configuration of default SchedTune
+	  parameters from kernel.
+
 	  If unsure, say N.
 
 config DEFAULT_USE_ENERGY_AWARE
