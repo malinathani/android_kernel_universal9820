@@ -111,6 +111,9 @@ config CPU_FREQ_DEFAULT_GOV_SCHEDUTIL
 	  have a look at the help section of that governor. The fallback
 	  governor will be 'performance'.
 
+endchoice
+
+
 if CPU_FREQ_GOV_SCHEDUTIL
 
 config SCHEDUTIL_UP_RATE_LIMIT
@@ -128,8 +131,6 @@ config SCHEDUTIL_DOWN_RATE_LIMIT
 	  microseconds.
 
 endif
-
-endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
 	tristate "'performance' governor"
