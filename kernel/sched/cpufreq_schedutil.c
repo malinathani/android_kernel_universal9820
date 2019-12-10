@@ -976,7 +976,7 @@ tunables_init:
 	tunables->fb_legacy = true;
 #endif
 
-	tunables->iowait_boost_enable = false;
+	tunables->iowait_boost_enable = true;
 
 	policy->governor_data = sg_policy;
 	sg_policy->tunables = tunables;
