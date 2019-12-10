@@ -31,6 +31,7 @@
 #include <linux/module.h>
 #include <linux/of_gpio.h>
 #include <linux/platform_device.h>
+#include <linux/pm_qos.h>
 #include <linux/regulator/consumer.h>
 #include <linux/slab.h>
 #include <linux/time.h>
@@ -683,6 +684,8 @@ struct sec_ts_data {
 	int nv;
 	int disassemble_count;
 
+	struct pm_qos_request pm_qos_req;
+
 	struct delayed_work work_read_info;
 	struct delayed_work work_print_info;
 	u32	print_info_cnt_open;
@@ -778,7 +781,7 @@ struct sec_ts_data {
 	short cm_raw_set_avg_min;
 	short cm_raw_set_avg_max;
 	short cm_raw_set_p2p;
-	
+
 	short self_raw_set_avg_tx_min;
 	short self_raw_set_avg_tx_max;
 	short self_raw_set_avg_rx_min;
